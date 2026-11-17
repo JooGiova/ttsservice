@@ -43,10 +43,10 @@ public class TtsService {
                     ttsProperties.getPiper().getExecutable(),
                     "--model", modelPath.toAbsolutePath().toString(),
                     "--output_file", outputFile.toAbsolutePath().toString(),
-                    "--sentence_silence", "0.3",
-                    "--length_scale", "1.05",
-                    "--noise_scale", "0.75",
-                    "--noise_w", "0.8"
+                    "--sentence_silence", String.valueOf(ttsProperties.getPiper().getSentenceSilence()),
+                    "--length_scale", String.valueOf(ttsProperties.getPiper().getLengthScale()),
+                    "--noise_scale", String.valueOf(ttsProperties.getPiper().getNoiseScale()),
+                    "--noise_w", String.valueOf(ttsProperties.getPiper().getNoiseW())
             );
 
             // Unisce eventuali messaggi di errore di Piper nello stesso stream di output

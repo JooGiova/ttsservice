@@ -17,5 +17,9 @@ public class TtsProperties {
         private String executable;
         private String modelDir;
         private String defaultVoice;
+        private double sentenceSilence;
+        private double lengthScale;
+        private double noiseScale;
+        private double noiseW;
     }
 }
