@@ -42,7 +42,11 @@ public class TtsService {
             ProcessBuilder processBuilder = new ProcessBuilder(
                     ttsProperties.getPiper().getExecutable(),
                     "--model", modelPath.toAbsolutePath().toString(),
-                    "--output_file", outputFile.toAbsolutePath().toString()
+                    "--output_file", outputFile.toAbsolutePath().toString(),
+                    "--sentence_silence", "0.3",
+                    "--length_scale", "1.05",
+                    "--noise_scale", "0.75",
+                    "--noise_w", "0.8"
             );
 
             // Unisce eventuali messaggi di errore di Piper nello stesso stream di output
