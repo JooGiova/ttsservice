@@ -23,16 +23,14 @@ public class TtsService {
     }
 
     public byte[] generateAudio(TtsRequest request) {
-        // 1. Scegliamo la voce (quella richiesta oppure quella di default)
         String voiceFile = (request.voice() != null && !request.voice().isBlank())
                 ? request.voice()
                 : ttsProperties.getPiper().getDefaultVoice();
 
-        // Sicurezza base: evitiamo che qualcuno passi "../" nel nome della voce
         String safeVoiceName = Paths.get(voiceFile).getFileName().toString();
         Path modelPath = Paths.get(ttsProperties.getPiper().getModelDir(), safeVoiceName);
 
-        // 2. Prepariamo la cartella temporanea e un nome file univoco (es. 550e8400-e29b...wav)
+        // Prepariamo la cartella temporanea e un nome file univoco
         Path tempDir = Paths.get(ttsProperties.getTempDir());
         Path outputFile = tempDir.resolve(UUID.randomUUID() + ".wav");
 
@@ -40,7 +38,6 @@ public class TtsService {
             // Crea la cartella temp se non esiste ancora
             Files.createDirectories(tempDir);
 
-            // 3. Costruiamo il comando da lanciare su Linux:
             // piper --model /percorso/voce.onnx --output_file /tmp/tts-audio/uuid.wav
             ProcessBuilder processBuilder = new ProcessBuilder(
                     ttsProperties.getPiper().getExecutable(),
@@ -51,14 +48,12 @@ public class TtsService {
             // Unisce eventuali messaggi di errore di Piper nello stesso stream di output
             processBuilder.redirectErrorStream(true);
 
-            // 4. Avviamo il processo e gli "scriviamo" il testo nello Standard Input (come farebbe echo "..." | piper)
             Process process = processBuilder.start();
             try (OutputStream os = process.getOutputStream()) {
                 os.write(request.text().getBytes(StandardCharsets.UTF_8));
                 os.flush();
-            } // La chiusura automatica del try-with-resources dice a Piper che il testo è finito
+            }
 
-            // 5. Aspettiamo che Piper finisca (senza limiti di tempo)
             int exitCode = process.waitFor();
 
             if (exitCode != 0) {
@@ -66,7 +61,6 @@ public class TtsService {
                 throw new RuntimeException("Errore durante l'esecuzione di Piper: " + errorOutput);
             }
 
-            // 6. Leggiamo tutti i byte del file .wav appena creato e li restituiamo
             return Files.readAllBytes(outputFile);
 
         } catch (IOException | InterruptedException e) {
@@ -75,7 +69,7 @@ public class TtsService {
             }
             throw new RuntimeException("Errore tecnico nella generazione dell'audio", e);
         } finally {
-            // 7. PULIZIA: Questo blocco viene eseguito SEMPRE (anche in caso di errore)
+            // PULIZIA: Questo blocco viene eseguito SEMPRE (anche in caso di errore)
             // Cancella il file temporaneo dal disco per non riempire mai il server
             try {
                 Files.deleteIfExists(outputFile);

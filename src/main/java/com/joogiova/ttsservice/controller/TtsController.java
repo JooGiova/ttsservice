@@ -34,7 +34,7 @@ public class TtsController {
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "voice", required = false) String voice) {
 
-        // Estraiamo il testo dal file (.txt o .docx)
+        // Estrae il testo dal file (.txt o .docx)
         String extractedText = textExtractorService.extractText(file);
 
         TtsRequest request = new TtsRequest(extractedText, voice);
