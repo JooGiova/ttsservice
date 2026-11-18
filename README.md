@@ -61,7 +61,7 @@ Clona il repository e avvia Spring Boot attivando il profilo `linux`:
 
 ```bash
 git clone https://github.com/JooGiova/ttsservice
-cd tts-service
+cd ttsservice
 chmod +x mvnw
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=linux
 ```
@@ -97,6 +97,6 @@ curl -X POST http://localhost:8080/api/tts/file \
 
 ## 🔮 Sviluppi Futuri
 
-* [ ] Collegamento con **Bot Telegram** per la lettura diretta di documenti inviati in chat.
+* [X] Collegamento con **Bot Telegram** per la lettura diretta di documenti inviati in chat.
 * [ ] Sviluppo di un client mobile in **Flutter** per la riproduzione e il salvataggio locale degli audio.
 * [ ] Supporto all'estrazione di testo da file `.epub` e `.pdf`.
